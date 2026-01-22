@@ -39,11 +39,11 @@ async def start_command(client, message):
                 chat_id=message.chat.id,
                 from_chat_id=DB_CHANNEL_ID,
                 message_id=channel_message_id,
-                caption="⚠️ **This file will delete in 60 seconds!** \n\nSave it now if you need it."
+                caption="⚠️ **This file will delete in 15 minutes!** \n\nSave it now if you need it."
             )
             
-            # Wait for 60 seconds (1 minute)
-            await asyncio.sleep(60)
+            # Wait for 900 seconds (15 minutes)
+            await asyncio.sleep(900)
             
             # Delete the file from the user's chat
             await sent_msg.delete()
@@ -74,6 +74,15 @@ async def main():
     print("Bot is starting...")
     await web_server()
     await app.start()
+    
+    # --- FIX: Force the bot to remember the channel on startup ---
+    try:
+        await app.get_chat(DB_CHANNEL_ID)
+        print("Channel Connected Successfully!")
+    except Exception as e:
+        print(f"Failed to connect to channel: {e}")
+    # -------------------------------------------------------------
+
     print("Bot is Online!")
     await idle() 
     await app.stop()
@@ -81,4 +90,3 @@ async def main():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
- 
