@@ -1,5 +1,5 @@
 import asyncio
-from pyrogram import Client, filters
+from pyrogram import Client, filters, idle
 from pyrogram.types import Message
 from aiohttp import web
 
@@ -20,7 +20,6 @@ async def save_file(client, message):
     forwarded_msg = await message.forward(DB_CHANNEL_ID)
     
     # Create a link using the Message ID from the channel
-    # This encodes the ID so it looks like "start=100"
     file_link = f"https://t.me/{client.me.username}?start={forwarded_msg.id}"
     
     await message.reply_text(
@@ -31,12 +30,9 @@ async def save_file(client, message):
 # 2. Logic to Retrieve Files (Runs when USER clicks a link)
 @app.on_message(filters.command("start"))
 async def start_command(client, message):
-    # Check if the user passed a parameter (e.g., /start 105)
     if len(message.command) > 1:
         try:
             channel_message_id = int(message.command[1])
-            
-            # Copy the file from the DB Channel to the User
             await client.copy_message(
                 chat_id=message.chat.id,
                 from_chat_id=DB_CHANNEL_ID,
@@ -69,10 +65,9 @@ async def main():
     await web_server()
     await app.start()
     print("Bot is Online!")
-    await pyrogram.idle() # Keeps the bot running
+    await idle() 
     await app.stop()
 
 if __name__ == "__main__":
-    from pyrogram import idle
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
