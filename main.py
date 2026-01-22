@@ -33,12 +33,22 @@ async def start_command(client, message):
     if len(message.command) > 1:
         try:
             channel_message_id = int(message.command[1])
-            await client.copy_message(
+            
+            # Send the file and save the "sent message" into a variable
+            sent_msg = await client.copy_message(
                 chat_id=message.chat.id,
                 from_chat_id=DB_CHANNEL_ID,
                 message_id=channel_message_id,
-                caption="Here is your file from The Archive! 📂"
+                caption="⚠️ **This file will delete in 60 seconds!** \n\nSave it now if you need it."
             )
+            
+            # Wait for 60 seconds (1 minute)
+            await asyncio.sleep(60)
+            
+            # Delete the file from the user's chat
+            await sent_msg.delete()
+            await message.reply_text("🗑️ **File deleted for security.**")
+            
         except ValueError:
             await message.reply_text("❌ Invalid link.")
         except Exception as e:
@@ -71,3 +81,4 @@ async def main():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
+ 
