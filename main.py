@@ -1,6 +1,6 @@
 import asyncio
 from pyrogram import Client, filters, idle
-from pyrogram.types import BotCommand  # <--- Added this import
+from pyrogram.types import BotCommand  # <--- I added this import!
 from aiohttp import web
 
 # --- ⚙️ SETTINGS ---
@@ -139,6 +139,7 @@ async def main():
     await app.start()
     
     # --- 🆕 NEW: SET THE MENU COMMANDS HERE ---
+    # This tells Telegram to show these commands in the menu list!
     try:
         commands = [
             BotCommand("start", "Restart the bot"),
